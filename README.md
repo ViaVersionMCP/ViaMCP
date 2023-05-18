@@ -59,7 +59,7 @@ p_initChannel_1_.pipeline().addLast("timeout", new ReadTimeoutHandler(30)).addLa
 Add:
 
 ```java
-if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().getTargetVersion() != ViaMCP.NATIVE_VERSION) {
+if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().getTargetVersion().getVersion() != ViaMCP.NATIVE_VERSION) {
     final UserConnection user = new UserConnectionImpl(p_initChannel_1_, true);
     new ProtocolPipelineImpl(user);
     
@@ -71,7 +71,7 @@ Which should look like this afterwards (1.8.x for example):
 ```java
 p_initChannel_1_.pipeline().addLast((String)"timeout", (ChannelHandler)(new ReadTimeoutHandler(30))).addLast((String)"splitter", (ChannelHandler)(new MessageDeserializer2())).addLast((String)"decoder", (ChannelHandler)(new MessageDeserializer(EnumPacketDirection.CLIENTBOUND))).addLast((String)"prepender", (ChannelHandler)(new MessageSerializer2())).addLast((String)"encoder", (ChannelHandler)(new MessageSerializer(EnumPacketDirection.SERVERBOUND))).addLast((String)"packet_handler", (ChannelHandler)networkmanager);
 
-if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().getTargetVersion() != ViaMCP.NATIVE_VERSION) {
+if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().getTargetVersion().getVersion() != ViaMCP.NATIVE_VERSION) {
     final UserConnection user = new UserConnectionImpl(p_initChannel_1_, true);
     new ProtocolPipelineImpl(user);
     
