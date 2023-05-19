@@ -97,7 +97,7 @@ public class ProtocolInfo {
 
     public static ProtocolInfo fromProtocolVersion(final ProtocolVersion protocolVersion) {
         for (ProtocolInfo protocolInfo : PROTOCOL_INFOS) {
-            if (protocolInfo.getProtocolVersion().getOriginalVersion() == protocolVersion.getOriginalVersion()) {
+            if (protocolInfo.getProtocolVersion().getName().equals(protocolVersion.getName())) {
                 return protocolInfo;
             }
         }
