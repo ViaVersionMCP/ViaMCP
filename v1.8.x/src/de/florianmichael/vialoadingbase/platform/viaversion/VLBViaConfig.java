@@ -38,7 +38,7 @@ public class VLBViaConfig extends AbstractViaConfig {
     public VLBViaConfig(File configFile) {
         super(configFile);
 
-        this.reloadConfig();
+        this.reload();
     }
 
     @Override

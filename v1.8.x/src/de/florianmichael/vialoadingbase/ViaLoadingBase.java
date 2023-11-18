@@ -49,7 +49,7 @@ public class ViaLoadingBase {
         // Empty
     }, protocolVersions -> protocolVersions.addAll(ViaVersionPlatformImpl.createVersionList()));
     public final static Platform PLATFORM_VIA_BACKWARDS = new Platform("ViaBackwards", () -> inClassPath("com.viaversion.viabackwards.api.ViaBackwardsPlatform"), () -> new ViaBackwardsPlatformImpl(Via.getManager().getPlatform().getDataFolder()));
-    public final static Platform PLATFORM_VIA_REWIND = new Platform("ViaRewind", () -> inClassPath("de.gerrygames.viarewind.api.ViaRewindPlatform"), () -> new ViaRewindPlatformImpl(Via.getManager().getPlatform().getDataFolder()));
+    public final static Platform PLATFORM_VIA_REWIND = new Platform("ViaRewind", () -> inClassPath("com.viaversion.viarewind.api.ViaRewindPlatform"), () -> new ViaRewindPlatformImpl(Via.getManager().getPlatform().getDataFolder()));
 
     public final static Map<ProtocolVersion, ComparableProtocolVersion> PROTOCOLS = new LinkedHashMap<>();
 

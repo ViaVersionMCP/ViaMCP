@@ -23,22 +23,19 @@ import com.viaversion.viaversion.api.platform.providers.ViaProviders;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.protocol.ProtocolManagerImpl;
-import de.florianmichael.vialoadingbase.model.ComparableProtocolVersion;
 import de.florianmichael.vialoadingbase.model.Platform;
+import de.florianmichael.vialoadingbase.model.ComparableProtocolVersion;
 import de.florianmichael.vialoadingbase.platform.ViaBackwardsPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.ViaRewindPlatformImpl;
-import de.florianmichael.vialoadingbase.platform.ViaVersionPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaCommandHandler;
-import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaInjector;
 import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaProviders;
+import de.florianmichael.vialoadingbase.platform.ViaVersionPlatformImpl;
+import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaInjector;
 import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -52,7 +49,7 @@ public class ViaLoadingBase {
         // Empty
     }, protocolVersions -> protocolVersions.addAll(ViaVersionPlatformImpl.createVersionList()));
     public final static Platform PLATFORM_VIA_BACKWARDS = new Platform("ViaBackwards", () -> inClassPath("com.viaversion.viabackwards.api.ViaBackwardsPlatform"), () -> new ViaBackwardsPlatformImpl(Via.getManager().getPlatform().getDataFolder()));
-    public final static Platform PLATFORM_VIA_REWIND = new Platform("ViaRewind", () -> inClassPath("de.gerrygames.viarewind.api.ViaRewindPlatform"), () -> new ViaRewindPlatformImpl(Via.getManager().getPlatform().getDataFolder()));
+    public final static Platform PLATFORM_VIA_REWIND = new Platform("ViaRewind", () -> inClassPath("com.viaversion.viarewind.api.ViaRewindPlatform"), () -> new ViaRewindPlatformImpl(Via.getManager().getPlatform().getDataFolder()));
 
     public final static Map<ProtocolVersion, ComparableProtocolVersion> PROTOCOLS = new LinkedHashMap<>();
 

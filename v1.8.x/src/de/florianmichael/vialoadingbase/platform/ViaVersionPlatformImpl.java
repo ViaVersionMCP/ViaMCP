@@ -155,14 +155,8 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
         return true;
     }
 
-    @Override
-    public ConfigurationProvider getConfigurationProvider() {
+    public VLBViaConfig getConfig() {
         return config;
-    }
-
-    @Override
-    public boolean isOldClientsAllowed() {
-        return true;
     }
 
     @Override

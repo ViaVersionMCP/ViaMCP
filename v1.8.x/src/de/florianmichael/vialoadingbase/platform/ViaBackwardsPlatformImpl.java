@@ -27,7 +27,7 @@ public class ViaBackwardsPlatformImpl implements ViaBackwardsPlatform {
     private final File directory;
 
     public ViaBackwardsPlatformImpl(final File directory) {
-        this.init(this.directory = directory);
+        this.init(new File(this.directory = directory, "viabackwards.yml"));
     }
 
     @Override

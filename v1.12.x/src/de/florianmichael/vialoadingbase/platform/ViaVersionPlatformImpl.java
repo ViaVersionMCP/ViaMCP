@@ -35,7 +35,7 @@ import de.florianmichael.vialoadingbase.util.VLBTask;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -155,14 +155,8 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
         return true;
     }
 
-    @Override
-    public ConfigurationProvider getConfigurationProvider() {
+    public VLBViaConfig getConfig() {
         return config;
-    }
-
-    @Override
-    public boolean isOldClientsAllowed() {
-        return true;
     }
 
     @Override
