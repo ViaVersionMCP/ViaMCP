@@ -1,6 +1,20 @@
 # ViaMCP
 ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
 
+<!-- TOC -->
+* [ViaMCP](#viamcp)
+  * [Contact](#contact)
+  * [Setup](#setup)
+    * [Main-Class](#main-class)
+    * [NetworkManager](#networkmanager)
+  * [Version Control](#version-control)
+    * [Version Slider](#version-slider)
+  * [Clientside Fixes](#clientside-fixes)
+    * [Attack Order Fixes](#attack-order-fixes)
+    * [Block Sound Fixes](#block-sound-fixes)
+    * [Transaction Fixes for 1.17+](#transaction-fixes-for-117)
+  * [Exporting Without JAR Files](#exporting-without-jar-files)
+<!-- TOC -->
 ## Contact
 If you encounter any issues, please report them on the
 [issue tracker](https://github.com/FlorianMichael/ViaMCP/issues).  
@@ -142,6 +156,58 @@ return FixedSoundEngine.onItemUse(this, stack, playerIn, worldIn, pos, side, hit
 Replace all code in ``destroyBlock`` function in the ``World`` class with:
 ```java
 return FixedSoundEngine.destroyBlock(this, pos, dropBlock);
+```
+
+### Transaction Fixes for 1.17+
+Call the ``fixTransactions();`` in the ``ViaMCP`` class file so ViaVersion doesn't remap anything in transaction packets.
+
+After that, you need to do some changes in the Game code:
+
+**Class: S32PacketConfirmTransaction.java** <br>
+**Function: readPacketData()** <br>
+
+Replace the code with this method:
+```java
+public void readPacketData(PacketBuffer buf) throws IOException {
+    if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_17)) {
+        this.windowId = buf.readInt();
+    } else {
+        this.windowId = buf.readUnsignedByte();
+        this.actionNumber = buf.readShort();
+        this.accepted = buf.readBoolean();
+    }
+}
+```
+
+**Class: C0FPacketConfirmTransaction.java** <br>
+**Function: writePacketData()** <br>
+
+Replace the code with this method:
+```java
+public void writePacketData(PacketBuffer buf) throws IOException {
+    if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_17)) {
+        buf.writeInt(this.windowId);
+    } else {
+        buf.writeByte(this.windowId);
+        buf.writeShort(this.uid);
+        buf.writeByte(this.accepted ? 1 : 0);
+    }
+}
+```
+
+Note: this code can be different depending on your mappings and game version, you just need to make sure
+it only reads the window id and doesn't read the rest of the packet because we previously removed the 
+ViaVersion handlers which would have handled the rest of the packet.
+
+**Class: NetHandlerPlayClient.java** <br>
+**Function: handleConfirmTransaction()** <br>
+ 
+Add this code after the checkThreadAndEnqueue function call:
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_17)) {
+    this.addToSendQueue(new C0FPacketConfirmTransaction(packetIn.getWindowId(), 0, false));
+    return;
+}
 ```
 
 ## Exporting Without JAR Files
