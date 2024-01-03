@@ -1,6 +1,6 @@
 /*
  * This file is part of ViaLoadingBase - https://github.com/FlorianMichael/ViaLoadingBase
- * Copyright (C) 2022-2023 FlorianMichael/EnZaXD and contributors
+ * Copyright (C) 2020-2024 FlorianMichael/EnZaXD <florian.michael07@gmail.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package de.florianmichael.vialoadingbase.util;
 
 import java.text.MessageFormat;
