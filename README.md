@@ -39,39 +39,34 @@ Add this to the main class of your client (aka injection function)
 
 ```java
 try {
-  ViaMCP.create();
-  
-  // In case you want a version slider like in the Minecraft options, you can use this code here, please choose one of those:
-        
-  ViaMCP.INSTANCE.initAsyncSlider(); // For top left aligned slider
-  ViaMCP.INSTANCE.initAsyncSlider(x, y, width (min. 110), height (recommended 20)); // For custom position and size slider
+    ViaMCP.create();
+    
+    // In case you want a version slider like in the Minecraft options, you can use this code here, please choose one of those:
+          
+    ViaMCP.INSTANCE.initAsyncSlider(); // For top left aligned slider
+    ViaMCP.INSTANCE.initAsyncSlider(x, y, width (min. 110), height (recommended 20)); // For custom position and size slider
 } catch (Exception e) {
-  e.printStackTrace();
+    e.printStackTrace();
 }
 ```
 
 ### NetworkManager
-You will need to change 2 functions in NetworkManager.java <br>
+You will need to modify 2 methods inside NetworkManager.java
+
 **1. Hook ViaVersion into the Netty Pipeline**
 
-Name should be ``func_181124_a``, ``createNetworkManagerAndConnect`` or contain ``(Bootstrap)((Bootstrap)((Bootstrap)(new Bootstrap()).group((EventLoopGroup)lazyloadbase.getValue())``
+Find the method, that is ``func_181124_a``, ``createNetworkManagerAndConnect`` or contains ``(Bootstrap)((Bootstrap)((Bootstrap)(new Bootstrap()).group((EventLoopGroup)lazyloadbase.getValue())``
 
-After:
-
-(1.8.x)
-
+Find the vanilla network pipeline call:
 ```java
+// 1.8.x client
 p_initChannel_1_.pipeline().addLast((String)"timeout", (ChannelHandler)(new ReadTimeoutHandler(30))).addLast((String)"splitter", (ChannelHandler)(new MessageDeserializer2())).addLast((String)"decoder", (ChannelHandler)(new MessageDeserializer(EnumPacketDirection.CLIENTBOUND))).addLast((String)"prepender", (ChannelHandler)(new MessageSerializer2())).addLast((String)"encoder", (ChannelHandler)(new MessageSerializer(EnumPacketDirection.SERVERBOUND))).addLast((String)"packet_handler", (ChannelHandler)networkmanager);
-```
 
-(1.12.x)
-
-```java
+// 1.12.x client
 p_initChannel_1_.pipeline().addLast("timeout", new ReadTimeoutHandler(30)).addLast("splitter", new NettyVarint21FrameDecoder()).addLast("decoder", new NettyPacketDecoder(EnumPacketDirection.CLIENTBOUND)).addLast("prepender", new NettyVarint21FrameEncoder()).addLast("encoder", new NettyPacketEncoder(EnumPacketDirection.SERVERBOUND)).addLast("packet_handler", networkmanager);
 ```
 
-Add:
-
+After the vanilla network pipeline call, add the ViaMCP protocol pipeline hook:
 ```java
 if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().getTargetVersion().getVersion() != ViaMCP.NATIVE_VERSION) {
     final UserConnection user = new UserConnectionImpl(p_initChannel_1_, true);
@@ -80,8 +75,8 @@ if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().ge
     p_initChannel_1_.pipeline().addLast(new MCPVLBPipeline(user));
 }
 ```
-Which should look like this afterwards (1.8.x for example):
 
+Your code should look like this afterwards (1.8.x for example), the vanilla network pipeline call should not be commented out and the ViaMCP protocol pipeline hook should be after the vanilla network pipeline call:
 ```java
 p_initChannel_1_.pipeline().addLast((String)"timeout", (ChannelHandler)(new ReadTimeoutHandler(30))).addLast((String)"splitter", (ChannelHandler)(new MessageDeserializer2())).addLast((String)"decoder", (ChannelHandler)(new MessageDeserializer(EnumPacketDirection.CLIENTBOUND))).addLast((String)"prepender", (ChannelHandler)(new MessageSerializer2())).addLast((String)"encoder", (ChannelHandler)(new MessageSerializer(EnumPacketDirection.SERVERBOUND))).addLast((String)"packet_handler", (ChannelHandler)networkmanager);
 
@@ -110,7 +105,7 @@ In ``actionPerformed()`` function add:
 ```java
 if (button.id == 69)
 {
-  this.mc.displayGuiScreen(new GuiProtocolSelector(this));
+    this.mc.displayGuiScreen(new GuiProtocolSelector(this));
 }
 ```
 ### Version Slider
@@ -153,6 +148,7 @@ return FixedSoundEngine.onItemUse(this, stack, playerIn, worldIn, pos, side, hit
 ```
 
 **Block Breaking**
+
 Replace all code in ``destroyBlock`` function in the ``World`` class with:
 ```java
 return FixedSoundEngine.destroyBlock(this, pos, dropBlock);
