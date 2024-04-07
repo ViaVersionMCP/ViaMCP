@@ -40,9 +40,9 @@ import java.util.concurrent.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
+public class ViaVersionPlatformImpl implements ViaPlatform<UserConnection> {
 
-    private final ViaAPI<UUID> api = new VLBViaAPIWrapper();
+    private final ViaAPI<UserConnection> api = new VLBViaAPIWrapper();
 
     private final Logger logger;
     private final VLBViaConfig config;
@@ -127,7 +127,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
     }
 
     @Override
-    public ViaAPI<UUID> getApi() {
+    public ViaAPI<UserConnection> getApi() {
         return api;
     }
 
