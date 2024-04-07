@@ -21,7 +21,7 @@ If you encounter any issues, please report them on the
 If you just want to talk or need help with ViaMCP feel free to join my
 [Discord](https://discord.gg/BwWhCHUKDf).
 
-# Updating notice
+# Updating notice for existing users (if you are new to ViaMCP, you can ignore this)
 ViaVersion 4.10.0 did some changes to the ProtocolVersion API, you have to update your own code if you ever used the ViaLoadingBase class:
 ```java
 // Old
@@ -111,6 +111,8 @@ if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().ge
     p_initChannel_1_.pipeline().addLast(new MCPVLBPipeline(user));
 }
 ```
+
+### If you want to send custom packets, you have to store the UserConnection instance in a variable for later, it's important that this variable is NOT STATIC since it's also used for pinging servers!
 
 **2. Fix the compression in the NetworkManager#setCompressionTreshold function**
 
@@ -227,6 +229,25 @@ Add this code after the checkThreadAndEnqueue function call:
 if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
     this.addToSendQueue(new C0FPacketConfirmTransaction(packetIn.getWindowId(), 0, false));
     return;
+}
+```
+
+## Sending raw packets (e.g 1.9 interactions)
+You can send raw packets with ViaMCP, you can use the following code to send raw packets:
+```java
+final PacketWrapper blockPlace = PacketWrapper.create(ServerboundPackets1_9.PLAYER_BLOCK_PLACEMENT, null); // Replace null with your stored UserConnection, see NetworkManager tutorial above
+blockPlace.write(Type.POSITION1_8, new Position(0, 0, 0)); // Replace with the block position
+blockPlace.write(Type.VAR_INT, 0); // Replace with the block face, see https://wiki.vg/index.php?title=Protocol&oldid=7617#Player_Digging
+blockPlace.write(Type.VAR_INT, 0); // Replace with the hand, 0 for main hand, 1 for off hand
+blockPlace.write(Type.UNSIGNED_BYTE, (short) 0); // The x pos of the crosshair, from 0 to 15 increasing from west to east
+blockPlace.write(Type.UNSIGNED_BYTE, (short) 0); // The y pos of the crosshair, from 0 to 15 increasing from bottom to top
+blockPlace.write(Type.UNSIGNED_BYTE, (short) 0); // The z pos of the crosshair, from 0 to 15 increasing from north to south
+
+try {
+    blockPlace.sendToServer(Protocol1_8To1_9.class);
+} catch (Exception e) {
+    // Packet sending failed
+    throw new RuntimeException(e);
 }
 ```
 
