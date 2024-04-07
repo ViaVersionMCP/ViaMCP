@@ -21,7 +21,6 @@ package de.florianmichael.vialoadingbase.model;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -29,7 +28,6 @@ import java.util.logging.Logger;
 
 public class Platform {
     public static int COUNT = 0;
-    public final static List<ProtocolVersion> TEMP_INPUT_PROTOCOLS = new ArrayList<>(); // List of all Platform's protocol versions
 
     private final String name;
     private final BooleanSupplier load;
@@ -53,7 +51,7 @@ public class Platform {
 
     public void createProtocolPath() {
         if (this.versionCallback != null) {
-            this.versionCallback.accept(TEMP_INPUT_PROTOCOLS);
+            this.versionCallback.accept(ViaLoadingBase.PROTOCOLS);
         }
     }
 

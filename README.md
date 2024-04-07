@@ -21,6 +21,27 @@ If you encounter any issues, please report them on the
 If you just want to talk or need help with ViaMCP feel free to join my
 [Discord](https://discord.gg/BwWhCHUKDf).
 
+# Updating notice
+ViaVersion 4.10.0 did some changes to the ProtocolVersion API, you have to update your own code if you ever used the ViaLoadingBase class:
+```java
+// Old
+ViaLoadingBase.getInstance().getTargetVersion().isOlderThan(ProtocolVersion.v1_8);
+ViaLoadingBase.getInstance().getTargetVersion().isNewerThan(ProtocolVersion.v1_8);
+ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_8);
+ViaLoadingBase.getInstance().getTargetVersion().isOlderThanOrEqualTo(ProtocolVersion.v1_8);
+
+ViaLoadingBase.getInstance().getTargetVersion().getIndex();
+
+// New
+ViaLoadingBase.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_8);
+ViaLoadingBase.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_8);
+ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_8);
+ViaLoadingBase.getInstance().getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8);
+
+ViaLoadingBase.PROTOCOLS.indexOf(ViaLoadingBase.getInstance().getTargetVersion());
+```
+In addition to that, the *ComparableProtocolVersion* class has been removed and it's methods have been moved to the *ProtocolVersion* class.
+
 ## Setup
 Firstly, you will need to add the listed libraries into your dependencies in IntelliJ or Eclipse
 
@@ -168,7 +189,7 @@ After that, you need to do some changes in the Game code:
 Replace the code with this method:
 ```java
 public void readPacketData(PacketBuffer buf) throws IOException {
-    if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_17)) {
+    if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
         this.windowId = buf.readInt();
     } else {
         this.windowId = buf.readUnsignedByte();
@@ -184,7 +205,7 @@ public void readPacketData(PacketBuffer buf) throws IOException {
 Replace the code with this method:
 ```java
 public void writePacketData(PacketBuffer buf) throws IOException {
-    if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_17)) {
+    if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
         buf.writeInt(this.windowId);
     } else {
         buf.writeByte(this.windowId);
@@ -203,7 +224,7 @@ ViaVersion handlers which would have handled the rest of the packet.
  
 Add this code after the checkThreadAndEnqueue function call:
 ```java
-if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_17)) {
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
     this.addToSendQueue(new C0FPacketConfirmTransaction(packetIn.getWindowId(), 0, false));
     return;
 }
