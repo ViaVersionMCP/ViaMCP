@@ -34,6 +34,9 @@ snakeyml-2.2.jar > SnakeYaml > https://bitbucket.org/snakeyaml/snakeyaml
 
 Secondly, you need to add code that allows you to actually use ViaMCP (**Choose the version folder that corresponds with your client version**)
 
+For other versions than 1.8.x and 1.12.2, you will need to modify the code to fit your client version. You can see namings for
+other major versions [here](https://github.com/ViaVersion/ViaForge)
+
 ### Main-Class
 Add this to the main class of your client (aka injection function)
 
