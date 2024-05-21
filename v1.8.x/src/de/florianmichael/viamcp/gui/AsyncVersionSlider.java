@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class AsyncVersionSlider extends GuiButton {
-    private float dragValue = (float) ViaLoadingBase.PROTOCOLS.indexOf(ViaLoadingBase.getInstance().getTargetVersion()) / ViaLoadingBase.PROTOCOLS.size();
+    private float dragValue = (float) ViaLoadingBase.PROTOCOLS.indexOf(ViaLoadingBase.getInstance().getTargetVersion()) / (ViaLoadingBase.PROTOCOLS.size() - 1);
 
     private final List<ProtocolVersion> values;
     private float sliderValue;
@@ -113,7 +113,7 @@ public class AsyncVersionSlider extends GuiButton {
 
     public void setVersion(int protocol)
     {
-        this.dragValue = (float) ViaLoadingBase.PROTOCOLS.indexOf(ProtocolVersion.getProtocol(protocol)) / ViaLoadingBase.PROTOCOLS.size();
+        this.dragValue = (float) ViaLoadingBase.PROTOCOLS.indexOf(ProtocolVersion.getProtocol(protocol)) / (ViaLoadingBase.PROTOCOLS.size() - 1);
         this.sliderValue = this.dragValue;
         this.displayString = values.get((int) (this.sliderValue * (values.size() - 1))).getName();
     }
