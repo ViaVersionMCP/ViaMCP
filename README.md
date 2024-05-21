@@ -21,9 +21,6 @@ If you encounter any issues, please report them on the
 If you just want to talk or need help with ViaMCP feel free to join my
 [Discord](https://discord.gg/BwWhCHUKDf).
 
-# Important infomation from ViaVersion
-ViaVersion officially dropped support Java 8, so we can't update new ViaVersion for 1.21 until we found a solution (Annouced from https://github.com/ViaVersion/ViaVersion/releases/tag/4.10.2)
-
 # Updating notice for existing users (if you are new to ViaMCP, you can ignore this)
 ViaVersion 4.10.0 did some changes to the ProtocolVersion API, you have to update your own code if you ever used the ViaLoadingBase class:
 ```java
