@@ -41,7 +41,7 @@ public class AsyncVersionSlider extends GuiButton {
         this.values = ViaLoadingBase.PROTOCOLS;
         Collections.reverse(values);
         this.sliderValue = dragValue;
-        this.displayString = values.get((int) (this.sliderValue * (values.size() - 1))).getName();
+        this.displayString = values.get((int) Math.ceil(this.sliderValue * (values.size() - 1))).getName();
     }
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY)
@@ -72,10 +72,9 @@ public class AsyncVersionSlider extends GuiButton {
                 this.dragValue = sliderValue;
 
                 // Ceil index to show correctly display string (26.999998 => 27)
-                float selectedProtocolIndex = (int) ceil(this.sliderValue * (values.size() - 1));
-                float selectedProtocol = values.get(selectedProtocolIndex);
-                this.displayString = selectedProtocol.getName();
-                ViaLoadingBase.getInstance().reload(selectedProtocol);
+                int selectedProtocolIndex = (int) Math.ceil(this.sliderValue * (values.size() - 1));
+                this.displayString = values.get(selectedProtocolIndex).getName();
+                ViaLoadingBase.getInstance().reload(values.get(selectedProtocolIndex));
             }
 
             mc.getTextureManager().bindTexture(buttonTextures);
@@ -97,10 +96,9 @@ public class AsyncVersionSlider extends GuiButton {
             this.sliderValue = MathHelper.clamp_float(this.sliderValue, 0.0F, 1.0F);
             this.dragValue = sliderValue;
 
-            float selectedProtocolIndex = (int) ceil(this.sliderValue * (values.size() - 1));
-            float selectedProtocol = values.get(selectedProtocolIndex);
-            this.displayString = selectedProtocol.getName();
-            ViaLoadingBase.getInstance().reload(selectedProtocol);
+            int selectedProtocolIndex = (int) Math.ceil(this.sliderValue * (values.size() - 1));
+            this.displayString = values.get(selectedProtocolIndex).getName();
+            ViaLoadingBase.getInstance().reload(values.get(selectedProtocolIndex));
             this.dragging = true;
             return true;
         }
@@ -123,9 +121,7 @@ public class AsyncVersionSlider extends GuiButton {
         this.dragValue = (float) ViaLoadingBase.PROTOCOLS.indexOf(ProtocolVersion.getProtocol(protocol)) / (ViaLoadingBase.PROTOCOLS.size() - 1);
         this.sliderValue = this.dragValue;
 
-        float selectedProtocolIndex = (int) ceil(this.sliderValue * (values.size() - 1));
-        float selectedProtocol = values.get(selectedProtocolIndex);
-        this.displayString = selectedProtocol.getName();
-        ViaLoadingBase.getInstance().reload(selectedProtocol);
+        int selectedProtocolIndex = (int) Math.ceil(this.sliderValue * (values.size() - 1));
+        this.displayString = values.get(selectedProtocolIndex).getName();
     }
 }
