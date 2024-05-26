@@ -41,7 +41,7 @@ public class AsyncVersionSlider extends GuiButton {
         this.values = ViaLoadingBase.PROTOCOLS;
         Collections.reverse(values);
         this.sliderValue = dragValue;
-        this.displayString = values.get((int) (this.sliderValue * (values.size() - 1))).getName();
+        this.displayString = values.get((int) Math.ceil(this.sliderValue * (values.size() - 1))).getName();
     }
 
     public void func_191745_a(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
