@@ -29,8 +29,7 @@ public class ViaRewindPlatformImpl implements ViaRewindPlatform {
     private final File directory;
 
     public ViaRewindPlatformImpl(final File directory) {
-        this.directory = directory;
-        this.init(new File(getDataFolder(), "viarewind.yml"));
+        this.init(new File(this.directory = directory, "viarewind.yml"));
     }
 
     @Override

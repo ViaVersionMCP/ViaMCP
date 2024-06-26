@@ -58,6 +58,10 @@ Secondly, you need to add code that allows you to actually use ViaMCP (**Choose 
 For other versions than 1.8.x and 1.12.2, you will need to modify the code to fit your client version. You can see namings for
 other major versions [here](https://github.com/ViaVersion/ViaForge)
 
+NOTE:
+ViaVersion 5.0.0+ doesn't support Java 8 anymore, therefore when updating the libraries yourself, you need to download
+the -Java8 jar files from the [ci server](https://ci.viaversion.com/) or generate them yourself using [this](https://github.com/ViaVersion/ViaForge/tree/legacy-1.8?tab=readme-ov-file#installation) tool.
+
 ### Main-Class
 Add this to the main class of your client (aka injection function)
 

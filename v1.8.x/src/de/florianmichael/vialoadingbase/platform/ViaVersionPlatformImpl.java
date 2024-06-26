@@ -48,7 +48,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UserConnection> {
 
     public ViaVersionPlatformImpl(final Logger logger) {
         this.logger = logger;
-        config = new VLBViaConfig(new File(ViaLoadingBase.getInstance().getRunDirectory(), "viaversion.yml"));
+        config = new VLBViaConfig(new File(ViaLoadingBase.getInstance().getRunDirectory(), "viaversion.yml"), logger);
     }
 
     public static List<ProtocolVersion> createVersionList() {
