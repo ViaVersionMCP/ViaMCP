@@ -47,9 +47,9 @@ Firstly, you will need to add the listed libraries into your dependencies in Int
 
 Dependencies (Included inside ``libraries`` folder)
 ```
-ViaVersion-[ver].jar > ViaVersion > https://github.com/ViaVersion/ViaVersion
-ViaBackwards-[ver].jar > ViaBackwards > https://github.com/ViaVersion/ViaBackwards
-ViaRewind-[ver].jar > ViaRewind > https://github.com/ViaVersion/ViaRewind
+downgraded-ViaVersion-[ver].jar > ViaVersion > https://github.com/ViaVersion/ViaVersion
+downgraded-ViaBackwards-[ver].jar > ViaBackwards > https://github.com/ViaVersion/ViaBackwards
+downgraded-ViaRewind-[ver].jar > ViaRewind > https://github.com/ViaVersion/ViaRewind
 snakeyml-2.2.jar > SnakeYaml > https://bitbucket.org/snakeyaml/snakeyaml
 ```
 
