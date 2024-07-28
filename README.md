@@ -248,7 +248,7 @@ blockPlace.write(Type.UNSIGNED_BYTE, (short) 0); // The y pos of the crosshair, 
 blockPlace.write(Type.UNSIGNED_BYTE, (short) 0); // The z pos of the crosshair, from 0 to 15 increasing from north to south
 
 try {
-    blockPlace.sendToServer(Protocol1_8To1_9.class);
+    blockPlace.sendToServer(Protocol1_9To1_8.class); // Protocol class names are: server -> client version
 } catch (Exception e) {
     // Packet sending failed
     throw new RuntimeException(e);
