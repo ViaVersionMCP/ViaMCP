@@ -1,5 +1,6 @@
 # ViaMCP
 ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
+
 <!-- TOC -->
 * [ViaMCP](#viamcp)
   * [Contact](#contact)
@@ -67,9 +68,9 @@ Add this to the main class of your client (aka injection function)
 ```java
 try {
     ViaMCP.create();
-    
+
     // In case you want a version slider like in the Minecraft options, you can use this code here, please choose one of those:
-          
+
     ViaMCP.INSTANCE.initAsyncSlider(); // For top left aligned slider
     ViaMCP.INSTANCE.initAsyncSlider(x, y, width (min. 110), height (recommended 20)); // For custom position and size slider
 } catch (Exception e) {
@@ -98,7 +99,7 @@ After the vanilla network pipeline call, add the ViaMCP protocol pipeline hook:
 if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().getTargetVersion().getVersion() != ViaMCP.NATIVE_VERSION) {
     final UserConnection user = new UserConnectionImpl(p_initChannel_1_, true);
     new ProtocolPipelineImpl(user);
-    
+
     p_initChannel_1_.pipeline().addLast(new MCPVLBPipeline(user));
 }
 ```
@@ -110,7 +111,7 @@ p_initChannel_1_.pipeline().addLast((String)"timeout", (ChannelHandler)(new Read
 if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().getTargetVersion().getVersion() != ViaMCP.NATIVE_VERSION) {
     final UserConnection user = new UserConnectionImpl(p_initChannel_1_, true);
     new ProtocolPipelineImpl(user);
-    
+
     p_initChannel_1_.pipeline().addLast(new MCPVLBPipeline(user));
 }
 ```
@@ -226,7 +227,7 @@ ViaVersion handlers which would have handled the rest of the packet.
 
 **Class: NetHandlerPlayClient.java** <br>
 **Function: handleConfirmTransaction()** <br>
- 
+
 Add this code after the checkThreadAndEnqueue function call:
 ```java
 if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
