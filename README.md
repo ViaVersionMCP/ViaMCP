@@ -261,8 +261,5 @@ This should fix most peoples issues with dependencies (usually NoClassDefFoundEr
 - First export your client normally
 - Open your client .jar file with an archive program (winrar or 7zip for example)
 - Also open all libraries with the selected archive program (ViaVersion, ViaBackwards, ViaRewind and SnakeYaml)
-- From ViaBackwards drag and drop ``assets`` and ``com`` folders to your client .jar
-- From ViaRewind drag and drop ``assets`` and ``de`` folders to your client .jar
-- From ViaSnakeYaml drag and drop ``org`` folder to your client .jar
-- From ViaVersion drag and drop ``assets``, ``com`` and ``us`` folders to your client .jar 
+- From ViaVersion, ViaBackwards and ViaRewind drag and drop ``assets``, ``com`` and ``us`` folders to your client .jar
 - Then save and close, now your client should be working correctly ;)
