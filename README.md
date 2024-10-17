@@ -13,6 +13,7 @@ ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
     * [Attack Order Fixes](#attack-order-fixes)
     * [Block Sound Fixes](#block-sound-fixes)
     * [Transaction Fixes for 1.17+](#transaction-fixes-for-117)
+  * [Sending raw packets (e.g 1.9 interactions)](#sending-raw-packets-eg-19-interactions)
   * [Exporting Without JAR Files](#exporting-without-jar-files)
 <!-- TOC -->
 ## Contact
