@@ -115,8 +115,7 @@ if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().ge
     p_initChannel_1_.pipeline().addLast(new MCPVLBPipeline(user));
 }
 ```
-
-### If you want to send custom packets, you have to store the UserConnection instance in a variable for later, it's important that this variable is NOT STATIC since it's also used for pinging servers!
+###### Side note: If you want to send custom packets, you have to store the UserConnection instance in a variable for later, it's important that this variable is NOT STATIC since it's also used for pinging servers!
 
 **2. Fix the compression in the NetworkManager#setCompressionTreshold function**
 
