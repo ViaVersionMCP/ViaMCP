@@ -13,6 +13,7 @@ ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
     * [Attack Order Fixes](#attack-order-fixes)
     * [Block Sound Fixes](#block-sound-fixes)
     * [Transaction Fixes for 1.17+](#transaction-fixes-for-117)
+    * [Client Tick Fixes for 1.21.2+](#client-tick-fixes-for-1212)
   * [Sending raw packets (e.g 1.9 interactions)](#sending-raw-packets-eg-19-interactions)
   * [Exporting Without JAR Files](#exporting-without-jar-files)
 <!-- TOC -->
@@ -185,6 +186,16 @@ return FixedSoundEngine.destroyBlock(this, pos, dropBlock);
 
 ### Transaction Fixes for 1.17+
 Call the ``fixTransactions();`` in the ``ViaMCP`` class file so ViaVersion doesn't remap anything in transaction packets.
+
+### Client Tick Fixes for 1.21.2+
+Insert the code below in the end of function ``runTick()`` in the class ``Minecraft``:
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_21_2)) {
+    UserConnection connection = Via.getManager().getConnectionManager().getConnections().iterator().next();
+	PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_21_2.CLIENT_TICK_END, null, connection);
+	packet.sendToServer(Protocol1_21_2To1_21.class);
+}
+```
 
 After that, you need to do some changes in the Game code:
 
