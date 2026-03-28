@@ -231,6 +231,35 @@ public void writePacketData(PacketBuffer buf) throws IOException {
 }
 ```
 
+If you are on 1.8.x, change the game code below:
+
+**Class S08PacketPlayerPosLook.java** <br>
+**Function: readPacketData()** <br>
+
+Create a field ``confirmId``, type **int**
+Insert the code in the end of the method:
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_9)) {
+    this.confirmId = buf.readVarIntFromBuffer();
+}
+```
+Then insert the code below in:
+**Class NetHandlerPlayClient.java** <br>
+**Function: handlePlayerPosLook()** <br>
+```java
+entityplayer.setPositionAndRotation(d0, d1, d2, f, f1);
+// Insert the code here
+C03PacketPlayer.C06PacketPlayerPosLook packetIn1 = new C03PacketPlayer.C06PacketPlayerPosLook(entityplayer.posX, entityplayer.getEntityBoundingBox().minY, entityplayer.posZ, entityplayer.rotationYaw, entityplayer.rotationPitch, false);
+```
+Code:
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_9)) {
+	final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_9.ACCEPT_TELEPORTATION, Via.getManager().getConnectionManager().getConnections().iterator().next());
+    packet.write(Types.VAR_INT, packetIn.confirmId); // call the confirmId in S08
+    packet.sendToServer(Protocol1_9To1_8.class);
+}
+```
+
 Note: this code can be different depending on your mappings and game version, you just need to make sure
 it only reads the window id and doesn't read the rest of the packet because we previously removed the 
 ViaVersion handlers which would have handled the rest of the packet.
