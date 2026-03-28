@@ -25,7 +25,12 @@ import java.util.List;
 
 public class ProtocolInfo {
     
-    public static final ProtocolInfo R1_21_5 = new ProtocolInfo("Spring to Life drop", "March 25, 2025", ProtocolVersion.v1_21_5);
+	public static final ProtocolInfo R26_1 = new ProtocolInfo("Tiny Takeover", "March 24, 2026", ProtocolVersion.v26_1);
+	public static final ProtocolInfo R1_21_11 = new ProtocolInfo("Mounts of Mayhem", "December 9, 2025", ProtocolVersion.v1_21_11);
+	public static final ProtocolInfo R1_21_9 = new ProtocolInfo("The Copper Age", "September 30, 2025", ProtocolVersion.v1_21_9);
+	public static final ProtocolInfo R1_21_7 = new ProtocolInfo("Chase the Skies", "June 30, 2025 - July 17, 2025", ProtocolVersion.v1_21_7);
+	public static final ProtocolInfo R1_21_6 = new ProtocolInfo("Chase the Skies", "June 17, 2025", ProtocolVersion.v1_21_6);
+	public static final ProtocolInfo R1_21_5 = new ProtocolInfo("Spring to Life", "March 25, 2025", ProtocolVersion.v1_21_5);
     public static final ProtocolInfo R1_21_4 = new ProtocolInfo("The Garden Awakens", "December 3, 2024", ProtocolVersion.v1_21_4);
     public static final ProtocolInfo R1_21_2 = new ProtocolInfo("Bundles of Bravery", "October 22, 2024", ProtocolVersion.v1_21_2);
     public static final ProtocolInfo R1_21 = new ProtocolInfo("Tricky Trials", "June 13, 2024", ProtocolVersion.v1_21);
@@ -72,7 +77,8 @@ public class ProtocolInfo {
     public static final ProtocolInfo R1_7 = new ProtocolInfo("The Update that Changed the World", "October 22, 2013 - February 26, 2014", ProtocolVersion.v1_7_2);
 
     private final static List<ProtocolInfo> PROTOCOL_INFOS = Arrays.asList(R1_7, R1_7_6, R1_8, R1_9, R1_9_1, R1_9_2, R1_9_3, R1_10, R1_11, R1_11_1, R1_12, R1_12_1, R1_12_2, R1_13, R1_13_1, R1_13_2, R1_14, R1_14_1, R1_14_2, R1_14_3, R1_14_4,
-            R1_15, R1_15_1, R1_15_2, R1_16, R1_16_1, R1_16_2, R1_16_3, R1_16_4, R1_17, R1_17_1, R1_18, R1_18_2, R1_19, R1_19_1, R1_19_3, R1_19_4, R1_20, R1_20_2, R1_20_3, R1_20_5, R1_21, R1_21_2, R1_21_4, R1_21_5);
+            R1_15, R1_15_1, R1_15_2, R1_16, R1_16_1, R1_16_2, R1_16_3, R1_16_4, R1_17, R1_17_1, R1_18, R1_18_2, R1_19, R1_19_1, R1_19_3, R1_19_4, R1_20, R1_20_2, R1_20_3, R1_20_5, R1_21, R1_21_2, R1_21_4, R1_21_5, R1_21_6, R1_21_7, R1_21_9, R1_21_11,
+            R26_1);
 
     private final String name;
     private final String releaseDate;
