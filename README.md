@@ -1,3 +1,4 @@
+
 # ViaMCP
 ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
 
@@ -14,6 +15,7 @@ ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
     * [Block Sound Fixes](#block-sound-fixes)
     * [Transaction Fixes for 1.17+](#transaction-fixes-for-117)
     * [Client Tick Fixes for 1.21.2+](#client-tick-fixes-for-1212)
+    * [Teleport Fixes for 1.9+](#teleport-fixes-for-19)
   * [Sending raw packets (e.g 1.9 interactions)](#sending-raw-packets-eg-19-interactions)
   * [Exporting Without JAR Files](#exporting-without-jar-files)
 <!-- TOC -->
@@ -186,17 +188,6 @@ return FixedSoundEngine.destroyBlock(this, pos, dropBlock);
 
 ### Transaction Fixes for 1.17+
 Call the ``fixTransactions();`` in the ``ViaMCP`` class file so ViaVersion doesn't remap anything in transaction packets.
-
-### Client Tick Fixes for 1.21.2+
-Insert the code below in the end of function ``runTick()`` in the class ``Minecraft``:
-```java
-if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_21_2)) {
-    UserConnection connection = Via.getManager().getConnectionManager().getConnections().iterator().next();
-	PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_21_2.CLIENT_TICK_END, null, connection);
-	packet.sendToServer(Protocol1_21_2To1_21.class);
-}
-```
-
 After that, you need to do some changes in the Game code:
 
 **Class: S32PacketConfirmTransaction.java** <br>
@@ -231,6 +222,30 @@ public void writePacketData(PacketBuffer buf) throws IOException {
 }
 ```
 
+Note: this code can be different depending on your mappings and game version, you just need to make sure
+it only reads the window id and doesn't read the rest of the packet because we previously removed the 
+ViaVersion handlers which would have handled the rest of the packet.
+
+**Class: NetHandlerPlayClient.java** <br>
+**Function: handleConfirmTransaction()** <br>
+ 
+Add this code after the checkThreadAndEnqueue function call:
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
+    this.addToSendQueue(new C0FPacketConfirmTransaction(packetIn.getWindowId(), 0, false));
+    return;
+}
+```
+### Client Tick Fixes for 1.21.2+
+Insert the code below in the end of function ``runTick()`` in the class ``Minecraft``:
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_21_2)) {
+    UserConnection connection = Via.getManager().getConnectionManager().getConnections().iterator().next();
+	PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_21_2.CLIENT_TICK_END, null, connection);
+	packet.sendToServer(Protocol1_21_2To1_21.class);
+}
+```
+### Teleport fixes for 1.9+
 If you are on 1.8.x, change the game code below:
 
 **Class S08PacketPlayerPosLook.java** <br>
@@ -259,21 +274,6 @@ if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolV
 	final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_9.ACCEPT_TELEPORTATION, Via.getManager().getConnectionManager().getConnections().iterator().next());
     packet.write(Types.VAR_INT, packetIn.confirmId); // call the confirmId in S08
     packet.sendToServer(Protocol1_9To1_8.class);
-}
-```
-
-Note: this code can be different depending on your mappings and game version, you just need to make sure
-it only reads the window id and doesn't read the rest of the packet because we previously removed the 
-ViaVersion handlers which would have handled the rest of the packet.
-
-**Class: NetHandlerPlayClient.java** <br>
-**Function: handleConfirmTransaction()** <br>
- 
-Add this code after the checkThreadAndEnqueue function call:
-```java
-if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_17)) {
-    this.addToSendQueue(new C0FPacketConfirmTransaction(packetIn.getWindowId(), 0, false));
-    return;
 }
 ```
 
