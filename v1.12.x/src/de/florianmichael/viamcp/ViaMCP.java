@@ -24,6 +24,12 @@ import com.viaversion.viaversion.protocols.v1_16_1to1_16_2.packet.ClientboundPac
 import com.viaversion.viaversion.protocols.v1_16_1to1_16_2.packet.ServerboundPackets1_16_2;
 import com.viaversion.viaversion.protocols.v1_16_4to1_17.packet.ClientboundPackets1_17;
 import com.viaversion.viaversion.protocols.v1_16_4to1_17.packet.ServerboundPackets1_17;
+import com.viaversion.viabackwards.protocol.v1_20_3to1_20_2.Protocol1_20_3To1_20_2;
+import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
+import com.viaversion.viaversion.api.protocol.packet.State;
+import com.viaversion.viaversion.api.type.Types;
+import com.viaversion.viaversion.protocols.base.ServerboundLoginPackets;
+
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.viamcp.gui.AsyncVersionSlider;
 
@@ -32,7 +38,8 @@ import java.io.File;
 public class ViaMCP {
     public final static int NATIVE_VERSION = 340;
     public static ViaMCP INSTANCE;
-
+    public UserConnection user;
+    
     public static void create() {
         INSTANCE = new ViaMCP();
     }
@@ -48,6 +55,9 @@ public class ViaMCP {
 
         // Add this line if you implement the transaction fixes into the game code
         // fixTransactions();
+        
+        // Add this line if you want to join Hypixel
+        // fixHypixelLogin();
     }
 
     private void fixTransactions() {
@@ -55,6 +65,22 @@ public class ViaMCP {
         final Protocol1_17To1_16_4 protocol = Via.getManager().getProtocolManager().getProtocol(Protocol1_17To1_16_4.class);
         protocol.registerClientbound(ClientboundPackets1_17.PING, ClientboundPackets1_16_2.CONTAINER_ACK, wrapper -> {}, true);
         protocol.registerServerbound(ServerboundPackets1_16_2.CONTAINER_ACK, ServerboundPackets1_17.PONG, wrapper -> {}, true);
+    }
+    
+    private void fixHypixelLogin() {
+    	Protocol1_20_3To1_20_2 protocol1_20_3To1_20_2 = Via.getManager().getProtocolManager().getProtocol(Protocol1_20_3To1_20_2.class);
+        protocol1_20_3To1_20_2.registerServerbound(State.LOGIN, ServerboundLoginPackets.LOGIN_ACKNOWLEDGED, packetWrapper -> {
+            this.user = packetWrapper.user();
+        });
+        protocol1_20_3To1_20_2.registerServerbound(State.LOGIN, ServerboundLoginPackets.HELLO, packetWrapper -> {
+        	packetWrapper.cancel();
+        	PacketWrapper packet = PacketWrapper.create(ServerboundLoginPackets.HELLO, packetWrapper.user());
+        	GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
+        	packet.write(Types.STRING, profile.getName());
+        	UUID uuid = profile.getId();
+        	packet.write(Types.UUID, profile.getId());
+            packet.sendToServer(Protocol1_20_3To1_20_2.class);
+        });
     }
 
     public void initAsyncSlider() {

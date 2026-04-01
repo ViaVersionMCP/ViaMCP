@@ -16,6 +16,7 @@ ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
     * [Transaction Fixes for 1.17+](#transaction-fixes-for-117)
     * [Client Tick Fixes for 1.21.2+](#client-tick-fixes-for-1212)
     * [Teleport Fixes for 1.9+](#teleport-fixes-for-19)
+    * [Hypixel Join Fix](#hypixel-join-fix)
   * [Sending raw packets (e.g 1.9 interactions)](#sending-raw-packets-eg-19-interactions)
   * [Exporting Without JAR Files](#exporting-without-jar-files)
 <!-- TOC -->
@@ -274,6 +275,38 @@ if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolV
 	final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_9.ACCEPT_TELEPORTATION, Via.getManager().getConnectionManager().getConnections().iterator().next());
     packet.write(Types.VAR_INT, packetIn.confirmId); // call the confirmId in S08
     packet.sendToServer(Protocol1_9To1_8.class);
+}
+```
+### Hypixel Join Fix
+Call the ``fixHypixelLogin();`` in the ``ViaMCP`` class file
+
+Then insert the code below in the head of ``runTick()`` function in the class ``Minecraft``:
+```java
+PacketWrapperImpl packet = null;
+PacketWrapperImpl packetInfo = null;
+int modelParts = 0;
+// Hypixel only allow 1.21.4+ client to login.
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_21_4)) {
+	packet = (PacketWrapperImpl) PacketWrapper.create(ServerboundConfigurationPackets1_20_2.CUSTOM_PAYLOAD, ViaMCP.INSTANCE.user);
+	packet.write(Types.STRING, "minecraft:brand");
+	packet.write(Types.STRING, "vanilla");
+	packet.sendToServer(Protocol1_20_3To1_20_2.class);
+		                    
+	packetInfo = (PacketWrapperImpl) PacketWrapper.create(ServerboundConfigurationPackets1_20_2.CLIENT_INFORMATION, ViaMCP.INSTANCE.user);
+	packetInfo.write(Types.STRING, Minecraft.getMinecraft().gameSettings.language.toLowerCase());
+	packetInfo.write(Types.BYTE, (byte) Minecraft.getMinecraft().gameSettings.renderDistanceChunks);
+	packetInfo.write(Types.VAR_INT, Minecraft.getMinecraft().gameSettings.chatVisibility.ordinal());
+	packetInfo.write(Types.BOOLEAN, Minecraft.getMinecraft().gameSettings.chatColours);
+		                    
+	for (EnumPlayerModelParts parts : Minecraft.getMinecraft().gameSettings.getModelParts()) {
+	    modelParts |= parts.getPartMask();
+	}
+		                    
+	packetInfo.write(Types.UNSIGNED_BYTE, (short) modelParts);
+	packetInfo.write(Types.VAR_INT, 1);
+	packetInfo.write(Types.BOOLEAN, true);
+	packetInfo.write(Types.BOOLEAN, true);
+	packetInfo.sendToServer(Protocol1_20_3To1_20_2.class);
 }
 ```
 
