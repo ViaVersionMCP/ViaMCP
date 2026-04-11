@@ -4,7 +4,6 @@ ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
 
 <!-- TOC -->
 * [ViaMCP](#viamcp)
-  * [Contact](#contact)
   * [Setup](#setup)
     * [Main-Class](#main-class)
     * [NetworkManager](#networkmanager)
@@ -20,11 +19,6 @@ ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
   * [Sending raw packets (e.g 1.9 interactions)](#sending-raw-packets-eg-19-interactions)
   * [Exporting Without JAR Files](#exporting-without-jar-files)
 <!-- TOC -->
-## Contact
-If you encounter any issues, please report them on the
-[issue tracker](https://github.com/FlorianMichael/ViaMCP/issues).  
-If you just want to talk or need help with ViaMCP feel free to join my
-[Discord](https://discord.gg/BwWhCHUKDf).
 
 # Updating notice for existing users (if you are new to ViaMCP, you can ignore this)
 ViaVersion 4.10.0 did some changes to the ProtocolVersion API, you have to update your own code if you ever used the ViaLoadingBase class:
