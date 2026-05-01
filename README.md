@@ -243,6 +243,8 @@ if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolV
 ### Teleport fixes for 1.9+
 If you are on 1.8.x, change the game code below:
 
+#### For Via* version < 5.9.0
+
 **Class S08PacketPlayerPosLook.java** <br>
 **Function: readPacketData()** <br>
 
@@ -254,6 +256,10 @@ if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolV
     this.confirmId = buf.readVarIntFromBuffer();
 }
 ```
+
+#### For Via* version >= 5.9.0
+Call method ``fixPositionUpdates()`` in the class ``ViaMCP``
+
 Then insert the code below in:
 
 **Class NetHandlerPlayClient.java** <br>
@@ -266,8 +272,17 @@ C03PacketPlayer.C06PacketPlayerPosLook packetIn1 = new C03PacketPlayer.C06Packet
 Code:
 ```java
 if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_9)) {
-	final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_9.ACCEPT_TELEPORTATION, Via.getManager().getConnectionManager().getConnections().iterator().next());
-    packet.write(Types.VAR_INT, packetIn.confirmId); // call the confirmId in S08
+    UserConnection connection = Via.getManager().getConnectionManager().getConnections().iterator().next();
+	final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_9.ACCEPT_TELEPORTATION, connection);
+    // If you are using Via* 5.9.0, then write this:
+    // =============================================
+    PlayerPositionTracker tracker = connection.get(PlayerPositionTracker.class);
+    int id = tracker.getConfirmId();
+    // =============================================
+    // If you are using Via* < 5.9.0
+    int id = packetIn.confirmId;
+    // =============================================
+    packet.write(Types.VAR_INT, id);
     packet.sendToServer(Protocol1_9To1_8.class);
 }
 ```

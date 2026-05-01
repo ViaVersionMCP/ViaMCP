@@ -55,6 +55,8 @@ public class ViaMCP {
         
         // Add this line if you want to join Hypixel
         // fixHypixelLogin();
+		
+		// fixPositionUpdates();
     }
 
     private void fixTransactions() {
@@ -78,6 +80,25 @@ public class ViaMCP {
         	packet.write(Types.UUID, profile.getId());
             packet.sendToServer(Protocol1_20_3To1_20_2.class);
         });
+    }
+	
+	private void fixPositionUpdates() {
+    	Protocol1_9To1_8 protocol1_9To1_8 = Via.getManager().getProtocolManager().getProtocol(Protocol1_9To1_8.class);
+        protocol1_9To1_8.registerClientbound(ClientboundPackets1_9.PLAYER_POSITION, ClientboundPackets1_8.PLAYER_POSITION, handler -> {
+        	handler.passthrough(Types.DOUBLE);
+        	handler.passthrough(Types.DOUBLE);
+        	handler.passthrough(Types.DOUBLE);
+        	handler.passthrough(Types.FLOAT);
+        	handler.passthrough(Types.FLOAT);
+        	handler.passthrough(Types.UNSIGNED_BYTE);
+        	
+        	int teleportId = handler.read(Types.VAR_INT);
+        	
+        	PlayerPositionTracker tracker = handler.user().get(PlayerPositionTracker.class);
+        	if (tracker != null) {
+        		tracker.setConfirmId(teleportId);
+        	}
+        }, true);
     }
 
     public void initAsyncSlider() {
