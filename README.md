@@ -14,7 +14,6 @@ ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
     * [Block Sound Fixes](#block-sound-fixes)
     * [Transaction Fixes for 1.17+](#transaction-fixes-for-117)
     * [Client Tick Fixes for 1.21.2+](#client-tick-fixes-for-1212)
-    * [Teleport Fixes for 1.9+](#teleport-fixes-for-19)
     * [Hypixel Join Fix](#hypixel-join-fix)
   * [Sending raw packets (e.g 1.9 interactions)](#sending-raw-packets-eg-19-interactions)
   * [Exporting Without JAR Files](#exporting-without-jar-files)
@@ -240,52 +239,7 @@ if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolV
 	packet.sendToServer(Protocol1_21_2To1_21.class);
 }
 ```
-### Teleport fixes for 1.9+
-If you are on 1.8.x, change the game code below:
 
-#### For Via* version < 5.9.0
-
-**Class S08PacketPlayerPosLook.java** <br>
-**Function: readPacketData()** <br>
-
-Create a field ``confirmId``, type **int**
-
-Insert the code in the end of the method:
-```java
-if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_9)) {
-    this.confirmId = buf.readVarIntFromBuffer();
-}
-```
-
-#### For Via* version >= 5.9.0
-Call method ``fixPositionUpdates()`` in the class ``ViaMCP``
-
-Then insert the code below in:
-
-**Class NetHandlerPlayClient.java** <br>
-**Function: handlePlayerPosLook()** <br>
-```java
-entityplayer.setPositionAndRotation(d0, d1, d2, f, f1);
-// Insert the code here
-C03PacketPlayer.C06PacketPlayerPosLook packetIn1 = new C03PacketPlayer.C06PacketPlayerPosLook(entityplayer.posX, entityplayer.getEntityBoundingBox().minY, entityplayer.posZ, entityplayer.rotationYaw, entityplayer.rotationPitch, false);
-```
-Code:
-```java
-if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_9)) {
-    UserConnection connection = Via.getManager().getConnectionManager().getConnections().iterator().next();
-	final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_9.ACCEPT_TELEPORTATION, connection);
-    // If you are using Via* 5.9.0, then write this:
-    // =============================================
-    PlayerPositionTracker tracker = connection.get(PlayerPositionTracker.class);
-    int id = tracker.getConfirmId();
-    // =============================================
-    // If you are using Via* < 5.9.0
-    int id = packetIn.confirmId;
-    // =============================================
-    packet.write(Types.VAR_INT, id);
-    packet.sendToServer(Protocol1_9To1_8.class);
-}
-```
 ### Hypixel Join Fix
 Call the ``fixHypixelLogin();`` in the ``ViaMCP`` class file
 
