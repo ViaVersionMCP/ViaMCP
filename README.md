@@ -81,6 +81,17 @@ ViaLoadingBase.PROTOCOLS.indexOf(ViaLoadingBase.getInstance().getTargetVersion()
 ```
 In addition to that, the *ComparableProtocolVersion* class has been removed and it's methods have been moved to the *ProtocolVersion* class.
 
+## Updating notice for Minecraft version 26.2 attributes fix
+Since it's not allowed to share any minecraft source code, I have to make the *attributes* update independent from MCP.
+
+**Please follow the steps below to apply the fix if you want :)**
+
+**AIR_DRAG_MODIFIER**: The origin minecraft's air friction is **0.98**, check your **LocalPlayer.java(for modern version) / EntityPlayerSP.java(for legacy version), LivingEntity.java(modern) / EntityLivingBase.java(legacy), Entity.java**,then replace all *0.98* to the new air friction.
+
+**BOUNCINESS**: Find the code that makes player stop(delta movement is 0.0) when collided horizontally, it's most probably in **LocalPlayer.java / EntityPlayerSP.java**, then rewrite the *Vec3 delta movement / motionXZ* which is 0.0 to the new attributes you got.
+
+**FRICTION_MODIFIER**: Find the code that affects block friction, the origin minecraft's block friction is **0.91**, and it's most probably in **LivingEntity.java / EntityLivingBase.java**, then replace them to the new attributes you got.
+
 ## Setup
 Firstly, you will need to add the listed libraries into your dependencies in IntelliJ or Eclipse
 

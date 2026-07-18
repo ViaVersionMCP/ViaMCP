@@ -57,6 +57,7 @@ public class ViaMCP {
     	fixTransactions();
     	fixHypixelLogin();
     	fix1_17CursorItem();
+		// fix26_2Attributes();
     }
 
     private void fixTransactions() {
@@ -123,6 +124,74 @@ public class ViaMCP {
                 });
             }
         });
+    }
+	
+	private void fix26_2Attributes() {
+    	Protocol26_2To26_1 protocol26_2To26_1 = Via.getManager().getProtocolManager().getProtocol(Protocol26_2To26_1.class);
+    	protocol26_2To26_1.registerClientbound(ClientboundPackets26_1.UPDATE_ATTRIBUTES, ClientboundPackets26_1.UPDATE_ATTRIBUTES, handler -> {
+    		int entityId = handler.passthrough(Types.VAR_INT);
+    		int size = handler.passthrough(Types.VAR_INT);
+    		int newSize = size;
+
+			// You should make a tool to save new attributes according to entityId
+			// For example:
+			// NewAttributes data = NewAttributes.get(entityId);
+			
+    		for (int i = 0; i < size; i++) {
+    			int attributeId = handler.read(Types.VAR_INT);
+    			int mappedId = protocol26_2To26_1.getMappingData().getNewAttributeId(attributeId);
+    			String attributeKey = protocol26_2To26_1.getMappingData().getAttributeMappings().identifier(attributeId);
+    			
+    			double base = handler.read(Types.DOUBLE);
+    			int modifierSize = handler.read(Types.VAR_INT);
+
+    			double addValue = 0.0D;
+    			double addMultipliedBase = 0.0D;
+    			double multipliedTotal = 1.0D;
+
+    			if (mappedId == -1) {
+    				newSize--;
+    			} else {
+    				handler.write(Types.VAR_INT, mappedId);
+    				handler.write(Types.DOUBLE, base);
+    				handler.write(Types.VAR_INT, modifierSize);
+    			}
+
+    			for (int j = 0; j < modifierSize; j++) {
+    				String modifierId = handler.read(Types.STRING);
+    				double amount = handler.read(Types.DOUBLE);
+    				byte operation = handler.read(Types.BYTE);
+
+    				if (operation == 0) {
+    					addValue += amount;
+    				} else if (operation == 1) {
+    					addMultipliedBase += amount;
+    				} else if (operation == 2) {
+    					multipliedTotal *= 1.0D + amount;
+    				}
+
+    				if (mappedId != -1) {
+    					handler.write(Types.STRING, modifierId);
+    					handler.write(Types.DOUBLE, amount);
+    					handler.write(Types.BYTE, operation);
+    				}
+    			}
+
+    			double finalValue = (base + addValue + base * addMultipliedBase) * multipliedTotal;
+
+    			if ("minecraft:air_drag_modifier".equals(attributeKey)) {
+    				// data.airDrag = MathUtil.clamp(finalValue, 0.0D, 2048.0D); // air drag, same as block friction but in air.
+    			} else if ("minecraft:bounciness".equals(attributeKey)) {
+    				// data.bounciness = MathUtil.clamp(finalValue, 0.0D, 1.0D); // block bounciness
+    			} else if ("minecraft:friction_modifier".equals(attributeKey)) {
+    				// data.friction = MathUtil.clamp(finalValue, 0.0D, 2048.0D); // block friction, explains how fast player can move on blocks.
+    			}
+    		}
+
+    		if (size != newSize) {
+    			handler.set(Types.VAR_INT, 1, newSize);
+    		}
+    	}, true);
     }
 
     public void initAsyncSlider() {
