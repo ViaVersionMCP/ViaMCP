@@ -13,7 +13,9 @@ ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
     * [Attack Order Fixes](#attack-order-fixes)
     * [Block Sound Fixes](#block-sound-fixes)
     * [Transaction Fixes for 1.17+](#transaction-fixes-for-117)
+    * [SequenceId Fixes for 1.19+](#sequenceid-fix-for-119)
     * [Client Tick Fixes for 1.21.2+](#client-tick-fixes-for-1212)
+    * [New Attributes Fixes for 26.2+](#new-attributes-fix-for-262)
     * [Hypixel Join Fix](#hypixel-join-fix)
   * [Sending raw packets (e.g 1.9 interactions)](#sending-raw-packets-eg-19-interactions)
   * [Exporting Without JAR Files](#exporting-without-jar-files)
@@ -80,17 +82,6 @@ ViaLoadingBase.getInstance().getTargetVersion().olderThanOrEqualTo(ProtocolVersi
 ViaLoadingBase.PROTOCOLS.indexOf(ViaLoadingBase.getInstance().getTargetVersion());
 ```
 In addition to that, the *ComparableProtocolVersion* class has been removed and it's methods have been moved to the *ProtocolVersion* class.
-
-## Updating notice for Minecraft version 26.2 attributes fix
-Since it's not allowed to share any minecraft source code, I have to make the *attributes* update independent from MCP.
-
-**Please follow the steps below to apply the fix if you want :)**
-
-**AIR_DRAG_MODIFIER**: The origin minecraft's air friction is **0.98**, check your **LocalPlayer.java(for modern version) / EntityPlayerSP.java(for legacy version), LivingEntity.java(modern) / EntityLivingBase.java(legacy), Entity.java**,then replace all *0.98* to the new air friction.
-
-**BOUNCINESS**: Find the code that makes player stop(delta movement is 0.0) when collided horizontally, it's most probably in **LocalPlayer.java / EntityPlayerSP.java**, then rewrite the *Vec3 delta movement / motionXZ* which is 0.0 to the new attributes you got.
-
-**FRICTION_MODIFIER**: Find the code that affects block friction, the origin minecraft's block friction is **0.91**, and it's most probably in **LivingEntity.java / EntityLivingBase.java**, then replace them to the new attributes you got.
 
 ## Setup
 Firstly, you will need to add the listed libraries into your dependencies in IntelliJ or Eclipse
@@ -283,6 +274,82 @@ if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolV
     return;
 }
 ```
+### SequenceId Fix for 1.19+
+Add the code below to the class ``PlayerControllerMP`` / ``GameMode``:
+```java
+private int sequenceId;
+
+public int getSequenceId() {
+    return ++this.sequenceId;
+}
+```
+Then replace the packet code in the functions below:
+
+**Function: clickBlock(BlockPos loc, EnumFacing face)** <br>
+**Replace: C07/CPacketPlayerDigging packet on action START_DESTROY_BLOCK** <br>
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_19)) {
+    PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_19.PLAYER_ACTION, Via.getManager().getConnectionManager().getConnections().iterator().next());
+    packet.write(Types.VAR_INT, C07PacketPlayerDigging.Action.START_DESTROY_BLOCK.ordinal());
+    packet.write(Types.BLOCK_POSITION1_14, new BlockPosition(loc.getX(), loc.getY(), loc.getZ()));
+    packet.write(Types.BYTE, (byte) face.getIndex());
+    packet.write(Types.VAR_INT, this.getSequenceId());
+    packet.sendToServer(Protocol1_19To1_18_2.class);
+}
+```
+
+**Function: onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing)** <br>
+**Replace: C07/CPacketPlayerDigging packet on action START_DESTROY_BLOCK** <br>
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_19)) {
+    PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_19.PLAYER_ACTION, Via.getManager().getConnectionManager().getConnections().iterator().next());
+    packet.write(Types.VAR_INT, C07PacketPlayerDigging.Action.START_DESTROY_BLOCK.ordinal());
+    packet.write(Types.BLOCK_POSITION1_14, new BlockPosition(posBlock.getX(), posBlock.getY(), posBlock.getZ()));
+    packet.write(Types.BYTE, (byte) directionFacing.getIndex());
+    packet.write(Types.VAR_INT, this.getSequenceId());
+    packet.sendToServer(Protocol1_19To1_18_2.class);
+}
+```
+**Replace: C07/CPacketPlayerDigging packet on action STOP_DESTROY_BLOCK** <br>
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_19)) {
+    PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_19.PLAYER_ACTION, Via.getManager().getConnectionManager().getConnections().iterator().next());
+    packet.write(Types.VAR_INT, C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK.ordinal());
+    packet.write(Types.BLOCK_POSITION1_14, new BlockPosition(posBlock.getX(), posBlock.getY(), posBlock.getZ()));
+    packet.write(Types.BYTE, (byte) directionFacing.getIndex());
+    packet.write(Types.VAR_INT, this.getSequenceId());
+    packet.sendToServer(Protocol1_19To1_18_2.class);
+}
+```
+
+**Function: onPlayerRightClick(EntityPlayerSP player, WorldClient worldIn, ItemStack heldStack, BlockPos hitPos, EnumFacing side, Vec3 hitVec)** <br>
+**Replace: C08PacketPlayerBlockPlacement/CPacketPlayerBlockPlacement packet send code** <br>
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_19)) {
+    PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_19.USE_ITEM_ON, Via.getManager().getConnectionManager().getConnections().iterator().next());
+    packet.write(Types.VAR_INT, 0);
+    packet.write(Types.BLOCK_POSITION1_14, new BlockPosition(hitPos.getX(), hitPos.getY(), hitPos.getZ()));
+    packet.write(Types.VAR_INT, side.ordinal());
+    packet.write(Types.FLOAT, Float.valueOf(f)); // Change the arg according to your client code.
+    packet.write(Types.FLOAT, Float.valueOf(f1));
+    packet.write(Types.FLOAT, Float.valueOf(f2));
+    packet.write(Types.BOOLEAN, false);
+    packet.write(Types.VAR_INT, this.getSequenceId());
+    packet.sendToServer(Protocol1_19To1_18_2.class);
+}
+```
+
+**Function: sendUseItem(EntityPlayer playerIn, World worldIn, ItemStack itemStackIn)** <br>
+**Replace: C08PacketPlayerBlockPlacement/CPacketPlayerBlockPlacement packet send code** <br>
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_19)) {
+    PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_19.USE_ITEM, Via.getManager().getConnectionManager().getConnections().iterator().next());
+    packet.write(Types.VAR_INT, 0);
+    packet.write(Types.VAR_INT, this.getSequenceId());
+    packet.sendToServer(Protocol1_19To1_18_2.class);
+}
+```
+
 ### Client Tick Fixes for 1.21.2+
 Insert the code below in the end of function ``runTick()`` in the class ``Minecraft``:
 ```java
@@ -292,6 +359,17 @@ if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolV
 	packet.sendToServer(Protocol1_21_2To1_21.class);
 }
 ```
+
+### New Attributes Fix for 26.2+
+Since it's not allowed to share any minecraft source code, I have to make the *attributes* update independent from MCP.
+
+**Please follow the steps below to apply the fix if you want :)**
+
+``AIR_DRAG_MODIFIER``: The origin minecraft's air friction is **0.98**, check your ``LocalPlayer.java(for modern version)`` / ``EntityPlayerSP.java(for legacy version)``, ``LivingEntity.java(modern)`` / ``EntityLivingBase.java(legacy)``, ``Entity.java``,then replace all *0.98* to the new air friction.
+
+``BOUNCINESS``: Find the code that makes player stop(delta movement is 0.0) when collided horizontally, it's most probably in ``LocalPlayer.java`` / ``EntityPlayerSP.java``, then rewrite the *Vec3 delta movement / motionXZ* which is 0.0 to the new attributes you got.
+
+``FRICTION_MODIFIER``: Find the code that affects block friction, the origin minecraft's block friction is **0.91**, and it's most probably in ``LivingEntity.java`` / ``EntityLivingBase.java``, then replace them to the new attributes you got.
 
 ### Hypixel Join Fix
 Call the ``fixHypixelLogin();`` in the ``ViaMCP`` class file
