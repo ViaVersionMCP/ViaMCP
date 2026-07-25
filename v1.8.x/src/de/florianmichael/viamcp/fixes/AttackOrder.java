@@ -39,4 +39,11 @@ public class AttackOrder {
             mc.thePlayer.swingItem();
         }
     }
+	
+	public static void send1_9Animation() {
+		UserConnection connection = Via.getManager().getConnectionManager().getConnections().iterator().next();
+		PacketWrapper swing = PacketWrapper.create(ServerboundPackets1_9.SWING, connection);
+		swing.write(Types.VAR_INT, 0);
+		swing.sendToServer(Protocol1_9To1_8.class);
+	}
 }

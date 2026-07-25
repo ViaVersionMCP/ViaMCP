@@ -197,6 +197,17 @@ AttackOrder.sendConditionalSwing(this.objectMouseOver);
 Replace ``this.playerController.attackEntity(this.thePlayer, this.objectMouseOver.entityHit);`` in the switch in case ``ENTITY`` with:
 ```java
 AttackOrder.sendFixedAttack(this.thePlayer, this.objectMouseOver.entityHit);
+
+```
+**Class: EntityPlayerSP.java** <br>
+**Function: swingItem()** <br>
+Replace ``this.sendQueue.addToSendQueue(new C0APacketAnimation());`` with:
+```java
+if (ViaLoadingBase.getInstance().getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8)) {
+    this.sendQueue.addToSendQueue(new C0APacketAnimation());
+} else {
+    AttackOrder.send1_9Animation();
+}
 ```
 
 **1.12.2** <br>
