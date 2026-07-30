@@ -2,6 +2,11 @@
 # ViaMCP
 ViaVersion VersionSwitcher for Minecraft Coder Pack (MCP)
 
+## About
+If you are interested in the project, or you have issues / suggestions, feel free to join our discord!
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/V6xUFnmRpJ)
+
+## Content
 <!-- TOC -->
 * [ViaMCP](#viamcp)
   * [Setup](#setup)
