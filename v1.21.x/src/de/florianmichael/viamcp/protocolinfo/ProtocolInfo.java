@@ -25,6 +25,7 @@ import java.util.List;
 
 public enum ProtocolInfo {
 	
+	R_26_3("Wilderness Bound", "September 15, 2026", ProtocolVersion.v26_3);
     R_26_2("Chaos Cubed", "June 16, 2026", ProtocolVersion.v26_2),
     R_26_1("Tiny Takeover", "March 24, 2026", ProtocolVersion.v26_1),
     R1_21_11("Mounts of Mayhem", "December 9, 2025", ProtocolVersion.v1_21_11),

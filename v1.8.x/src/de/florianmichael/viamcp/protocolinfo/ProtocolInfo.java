@@ -22,6 +22,7 @@ import java.util.List;
 
 public class ProtocolInfo {
 	
+	public static final ProtocolInfo R26_3 = new ProtocolInfo("Wilderness Bound", "September 15, 2026", ProtocolVersion.v26_3);
 	public static final ProtocolInfo R26_2 = new ProtocolInfo("Chaos Cubed", "June 16, 2026", ProtocolVersion.v26_2);
 	public static final ProtocolInfo R26_1 = new ProtocolInfo("Tiny Takeover", "March 24, 2026", ProtocolVersion.v26_1);
 	public static final ProtocolInfo R1_21_11 = new ProtocolInfo("Mounts of Mayhem", "December 9, 2025", ProtocolVersion.v1_21_11);
@@ -76,7 +77,7 @@ public class ProtocolInfo {
 
     private final static List<ProtocolInfo> PROTOCOL_INFOS = Arrays.asList(R1_7, R1_7_6, R1_8, R1_9, R1_9_1, R1_9_2, R1_9_3, R1_10, R1_11, R1_11_1, R1_12, R1_12_1, R1_12_2, R1_13, R1_13_1, R1_13_2, R1_14, R1_14_1, R1_14_2, R1_14_3, R1_14_4,
             R1_15, R1_15_1, R1_15_2, R1_16, R1_16_1, R1_16_2, R1_16_3, R1_16_4, R1_17, R1_17_1, R1_18, R1_18_2, R1_19, R1_19_1, R1_19_3, R1_19_4, R1_20, R1_20_2, R1_20_3, R1_20_5, R1_21, R1_21_2, R1_21_4, R1_21_5, R1_21_6, R1_21_7, R1_21_9, R1_21_11,
-            R26_1, R26_2);
+            R26_1, R26_2, R26_3);
 
     private final String name;
     private final String releaseDate;
