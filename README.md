@@ -19,7 +19,7 @@ If you are interested in the project, or you have issues / suggestions, feel fre
     * [Block Sound Fixes](#block-sound-fixes)
     * [Transaction Fixes for 1.17+](#transaction-fixes-for-117)
     * [SequenceId Fixes for 1.19+](#sequenceid-fix-for-119)
-    * [Client Tick Fixes for 1.21.2+](#client-tick-fixes-for-1212)
+    * [~~Client Tick Fixes for 1.21.2+~~](#client-tick-fixes-for-1212)
     * [New Attributes Fixes for 26.2+](#new-attributes-fix-for-262)
     * [Hypixel Join Fix](#hypixel-join-fix)
   * [Sending raw packets (e.g 1.9 interactions)](#sending-raw-packets-eg-19-interactions)
@@ -366,7 +366,9 @@ if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolV
 }
 ```
 
-### Client Tick Fixes for 1.21.2+
+### ~~Client Tick Fixes for 1.21.2+~~
+> **Note:** This fix is no longer needed. ViaBackwards (5.12.0+) now sends the ``CLIENT_TICK_END`` packet automatically (see [``PlayerPacketsTickTask``](https://github.com/ViaVersion/ViaBackwards/blob/master/common/src/main/java/com/viaversion/viabackwards/protocol/v1_21_2to1_21/task/PlayerPacketsTickTask.java)), so the code below is kept for reference only and should not be applied.
+
 Insert the code below in the end of function ``runTick()`` in the class ``Minecraft``:
 ```java
 if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_21_2)) {
